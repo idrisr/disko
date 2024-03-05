@@ -1,9 +1,9 @@
-{
+{ device ? throw "pass in your device", ... }: {
   disko.devices = {
     disk = {
       vdb = {
         type = "disk";
-        device = "/dev/vdb";
+        inherit device;
         content = {
           type = "gpt";
           partitions = {
@@ -14,9 +14,7 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [
-                  "defaults"
-                ];
+                mountOptions = [ "defaults" ];
               };
             };
             luks = {
@@ -31,7 +29,7 @@
                   keyFile = "/tmp/secret.key";
                   allowDiscards = true;
                 };
-                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                additionalKeyFiles = [ ];
                 content = {
                   type = "lvm_pv";
                   vg = "pool";
@@ -47,27 +45,23 @@
         type = "lvm_vg";
         lvs = {
           root = {
-            size = "100M";
+            size = "100G";
             content = {
               type = "filesystem";
               format = "ext4";
               mountpoint = "/";
-              mountOptions = [
-                "defaults"
-              ];
+              mountOptions = [ "defaults" ];
             };
           };
           home = {
-            size = "10M";
+            size = "100G";
             content = {
               type = "filesystem";
               format = "ext4";
               mountpoint = "/home";
             };
           };
-          raw = {
-            size = "10M";
-          };
+          raw = { size = "100G"; };
         };
       };
     };
